@@ -3,6 +3,7 @@
 A beginner-level simulation project exploring **quantum error correction (QEC)** using the **repetition code**, built with [Stim](https://github.com/quantumlib/Stim), [PyMatching](https://github.com/oscarhiggott/PyMatching), and [Sinter](https://github.com/quantumlib/Stim/tree/main/glue/sample). The project simulates noisy quantum circuits, decodes errors using a minimum-weight perfect matching (MWPM) decoder, and estimates the error-correction **threshold** of the repetition code under a phenomenological noise model.
 
 ---
+
 ## Table of Contents
 
 1. [Project Overview](#project-overview)
@@ -10,7 +11,7 @@ A beginner-level simulation project exploring **quantum error correction (QEC)**
 3. [What Is Quantum Error Correction?](#what-is-quantum-error-correction)
 4. [What Is a Repetition Code?](#what-is-a-repetition-code)
 5. [Tools and Libraries Used](#tools-and-libraries-used)
-6. [How the Project Works](#how-the-project-works)
+6. [How my this Project Works](#how-my-this-project-works)
 7. [Results](#results)
 8. [Limitations](#limitations)
 9. [Future Work](#future-work)
@@ -23,32 +24,30 @@ A beginner-level simulation project exploring **quantum error correction (QEC)**
 
 ## 📌 Overview
 
-Quantum computers are extremely sensitive to noise — physical qubits lose information through decoherence and gate errors. **Quantum error correction** solves this by spreading one unit of "logical" information across many noisy "physical" qubits, so that errors can be detected and corrected without directly measuring (and destroying) the encoded quantum state.
+Quantum computers are extremely sensitive to noise because physical qubits lose information through decoherence and gate errors. **Quantum error correction** solves this by spreading one unit of "logical" information across many noisy "physical" qubits, so that errors can be detected and corrected without directly measuring (and destroying) the encoded quantum state.
 
-This project implements one of the simplest QEC codes — the **repetition code** — and studies how well it protects information as the amount of physical noise and the size (distance) of the code change.
+This project implements one of the simplest QEC codes, **"repetition code"** and studies how well it protects information as the amount of physical noise and the size (distance) of the code change.
 
-The quantum error correction only works when the physical error rate is kept **below a critical threshold**; below that threshold, adding more physical qubits exponentially suppresses the logical error rate, while above it, larger codes actually perform worse. This project reproduces that same qualitative behavior in simulation.
+The quantum error correction only works when the physical error rate is kept **below a critical threshold**. Below that threshold, adding more physical qubits exponentially suppresses the logical error rate, while above it, larger codes actually perform worse. This project reproduces that same qualitative behavior in simulation.
 
 > "If I copy the same piece of quantum information across many qubits, how much noise can I tolerate before the information is lost?"
 
 The project:
 - Builds a repetition code circuit with a chosen "distance" (a measure of how many qubits are used for protection).
-- Adds random noise to the circuit using a **phenomenological noise model** — a simplified, idealized way of injecting noise that is easy to simulate and is commonly used as a first step before testing more detailed, gate-by-gate noise models.
+- Adds random noise to the circuit using a **phenomenological noise model**. It is a simplified, idealized way of injecting noise  that is easy to simulate and is commonly used as a first step before testing more detailed, gate-by-gate noise models.
 - Uses a decoder to guess and undo the noise.
 - Measures how often the decoder guesses wrong (this is called the **logical error rate**).
 - Repeats this process for different code sizes and noise levels to find the **threshold**: the noise level below which adding more qubits actually helps, and above which it doesn't.
 
 ---
 
-
-
 ## 🧠 Background Concepts
 
 | Concept | Plain-English Explanation |
 |---|---|
-| **Physical qubit** | A single, noisy quantum bit (e.g., a superconducting qubit) that can flip due to errors. |
+| **Physical qubit** | A single, noisy quantum bit (e.g., a superconducting qubit) that can be flipped due to errors. |
 | **Logical qubit** | A qubit encoded across many physical qubits so that errors can be detected/corrected. |
-| **Repetition code** | The simplest QEC code — repeats one logical bit across several physical qubits and uses parity checks to catch bit-flip errors. |
+| **Repetition code** | The simplest QEC code that repeats one logical bit across several physical qubits and uses parity checks to catch bit-flip errors. |
 | **Code distance (d)** | Roughly, how many simultaneous errors the code can tolerate before failing. Higher `d` = more physical qubits, stronger protection. |
 | **Detector** | A parity-check measurement that flags *when* an error has occurred, without revealing the encoded data. |
 | **Detector Error Model (DEM)** | A graph-like summary, generated by Stim, of which physical errors trigger which detectors. |
@@ -57,18 +56,15 @@ The project:
 
 ---
 
-
-
 ## What Is Quantum Error Correction?
 
 Imagine you are sending a single important word over a noisy phone line, and there's a chance a letter gets scrambled. One way to protect the word is to say it three times: "APPLE, APPLE, APPLE." If the noise only scrambles one copy, the listener can still figure out the correct word by looking at the majority.
 
 That is the basic idea behind quantum error correction. Instead of letters, we protect **qubits**. Instead of repeating words, we spread one qubit's information across several physical qubits. A **decoder** then looks at the results and figures out the most likely mistake, similar to how the listener figures out the correct word.
 
-Google Quantum AI describes quantum error correction as essential because "quantum computers stand at the frontier of technological innovation" but are only useful at scale if their errors can be detected and fixed faster than they occur.
+Quantum error correction is essential because "quantum computers stand at the frontier of technological innovation" but are only useful at scale if their errors can be detected and fixed faster than they occur.
 
 ---
-
 
 ## What Is a Repetition Code?
 
@@ -79,7 +75,7 @@ A repetition code protects **one logical qubit** by repeating it across several 
 In this project:
 - **Code distance (d):** controls how many qubits are used. A distance-9 code uses 9 data qubits and 8 ancilla qubits (17 qubits total).
 - **Rounds:** the circuit checks for errors multiple times in a row (25 rounds in this project) instead of only once, because real quantum computers need continuous error checking.
-- **Noise model:** this project uses a **phenomenological noise model** — random errors are added before each round (called depolarization) and before each measurement (a small chance of flipping a result). This model is a simplified, idealized stand-in for real hardware noise: it captures the two main error sources (data errors and measurement errors) without simulating every individual gate, which makes it fast to run and a good starting point before moving to more detailed circuit-level noise models.
+- **Noise model:** This project uses a **phenomenological noise model** in which random errors are added before each round (called depolarization) and before each measurement (a small chance of flipping a result). This model is a simplified, idealized stand-in for real hardware noise because it captures the two main error sources (data errors and measurement errors) without simulating every individual gate, which makes it fast to run and a good starting point before moving to more detailed circuit-level noise models.
 
 The **larger the distance**, the more errors the code can survive, as long as the physical noise stays below the code's threshold.
 
@@ -98,10 +94,10 @@ In this project, Stim is used to:
 - Convert the noisy circuit into a **Detector Error Model**.
 
 ### Detector Error Model (DEM)
-The **Detector Error Model** is Stim's compact, graph-like description of a noisy circuit: it lists every possible physical error and which detector(s) it would trigger if it occurred (`circuit.detector_error_model()`). Instead of reasoning about the full quantum circuit, a decoder only needs this much smaller error graph — each **node** is a detector, and each **edge** is a possible error connecting two detectors (or a detector to the boundary). This is what makes fast, practical decoding possible.
+The **Detector Error Model** is Stim's compact, graph-like description of a noisy circuit. It lists every possible physical error and which detector in DEM it would trigger if it occurred (`circuit.detector_error_model()`). Instead of reasoning about the full quantum circuit, a decoder only needs this much smaller error graph. In this graph, each **node** is a detector, and each **edge** is a possible error connecting two detectors (or a detector to the boundary). This is what makes fast, practical decoding possible.
 
 ### PyMatching — Decoding
-PyMatching is a fast **Minimum-Weight Perfect Matching (MWPM)** decoder built by Oscar Higgott and Craig Gidney, developed with support from the Google Quantum AI team. Given a DEM and a set of detector events from a run, PyMatching finds the most likely underlying pattern of physical errors by matching pairs of fired detectors together. In this project, `pymatching.Matching.from_detector_error_model(...)` builds the decoder, and `matcher.decode_batch(...)` predicts whether the logical qubit flipped for each of the 100,000 simulated shots.
+PyMatching is a fast **Minimum-Weight Perfect Matching (MWPM)** decoder built by Oscar Higgott and Craig Gidney. Given a DEM and a set of detector events from a run, PyMatching finds the most likely underlying pattern of physical errors by matching pairs of fired detectors together. In this project, `pymatching.Matching.from_detector_error_model(...)` builds the decoder, and `matcher.decode_batch(...)` predicts whether the logical qubit flipped for each of the 100,000 simulated shots.
 
 ### Sinter
 Sinter is Stim's companion tool for running **large-scale QEC experiments**. While Stim runs one circuit at a time, Sinter automatically runs many circuits across different code distances and noise levels, collects the statistics, and helps generate the threshold plot. In this project, Sinter is used to test code distances 3, 5, 7, and 9 against several physical error rates, using PyMatching as the decoder.
@@ -112,9 +108,7 @@ Sinter is Stim's companion tool for running **large-scale QEC experiments**. Whi
 
 ---
 
-
-
-## How the Project Works
+## How my this Project Works?
 
 1. **Build the circuit.** A repetition code circuit is generated with code distance 9, run for 25 rounds, using a phenomenological noise model with a 4% chance of noise per qubit per round and a 1% chance of a measurement flip.
 2. **Look at raw measurements.** The circuit is sampled once to see the raw "yes/no" results from every qubit, every round.
@@ -154,44 +148,35 @@ The full threshold plot, generated using Sinter, comparing code distances 3, 5, 
 
 ### Key Observations
 
-- **Low-noise regime (4% depolarization):** at distance 9, running 100,000 shots produced only a small number of logical errors, confirming the code protects the logical qubit well when physical noise is low.
-  *(Fill in your exact printed count here, e.g. "There were `X` wrong predictions out of 100,000 shots".)*
-- **High-noise regime (13% depolarization):** the same distance-9 code, tested under the same conditions, showed a clear increase in logical errors. This confirms the expected relationship: **more physical noise → more logical errors.**
+- **Low-noise regime (4% depolarization):** At distance 9, running 100,000 shots produced only a small number of logical errors, confirming the code protects the logical qubit well when physical noise is low.
+ "There were `X` wrong predictions out of 100,000 shots"
+- **High-noise regime (13% depolarization):** The same distance-9 code, tested under the same conditions, showed a clear increase in logical errors. This confirms the expected relationship: **more physical noise → more logical errors.**
   *(Fill in your exact printed count and computed logical error rate here.)*
-- **Distance sweep (d = 3, 5, 7):** at low physical error rates, larger code distances gave a lower logical error rate. At high physical error rates, this advantage shrank or disappeared — this crossover is the signature of a noise **threshold**.
-- **Sinter threshold plot (d = 3, 5, 7, 9):** the curves for different distances cross close together around a specific physical error rate. Below that point, increasing the distance helps; above it, increasing the distance stops helping (and can even hurt). Report the approximate crossing point you observed once you have run the notebook and can read it off the plot.
-
+- **Distance sweep (d = 3, 5, 7):** At low physical error rates, larger code distances gave a lower logical error rate. At high physical error rates, this advantage shrank or disappeared.
+- **Sinter threshold plot (d = 3, 5, 7, 9):** The curves for different distances cross close together around a specific physical error rate. Below that point, increasing the distance helps. Above it, increasing the distance stops helping (and can even hurt). Report the approximate crossing point you observed once you have run the notebook and can read it off the plot.
 
 ---
-
 
 ## Limitations
 
 This project is a learning-focused simulation, and it comes with real simplifications that are worth being upfront about:
 
-- **Phenomenological noise, not circuit-level noise.** Errors are only injected before each round and before each measurement. Real quantum hardware also has noise on every individual gate, on idle qubits, and on qubit resets. A circuit-level noise model (e.g. using `after_clifford_depolarization` and `after_reset_flip_probability` in Stim) would be a more faithful — and more complex — next step.
-- **Repetition code protects against only one type of error.** This code only protects against bit-flip (or phase-flip) errors, not both at once. It cannot fully protect a general qubit the way codes like the surface code can — it is a simplified teaching example, not a code you'd use to build a real fault-tolerant qubit.
-- **Single decoder tested.** Only PyMatching's Minimum-Weight Perfect Matching decoder was used. Its accuracy was not compared against other decoders (e.g. Union-Find or belief-propagation decoders), so its performance here shouldn't be read as "the best possible" result for this code.
+- **Phenomenological noise, not circuit-level noise.** Errors are only injected before each round and before each measurement. Real quantum hardware also has noise on every individual gate, on idle qubits, and on qubit resets. A circuit-level noise model (e.g. using `after_clifford_depolarization` and `after_reset_flip_probability` in Stim) would be a more faithful and more complex.
+- **Repetition code protects against only one type of error.** This code only protects against bit-flip (or phase-flip) errors, not both at once. It cannot fully protect a general qubit the way codes like the surface code can.
 - **No fixed random seed.** The simulations rely on random sampling, and no seed was fixed for reproducibility. Re-running the script will produce slightly different logical error counts each time (though the overall trend should hold).
-- **Narrow parameter sweep.** Only a handful of code distances (3, 5, 7, 9) and a limited set of physical error rates were tested. A finer sweep would give a more precise threshold estimate.
 - **No comparison to real hardware data.** All results come from simulation. Actual superconducting or trapped-ion qubits have correlated errors, leakage, and drift that this model does not capture.
 - **Single noise channel.** Only depolarizing noise and measurement flips were used. Other realistic noise sources (e.g. amplitude damping, correlated crosstalk between neighboring qubits) were not modeled.
 
-Being transparent about these limitations is intentional — it shows a clear understanding of what the simulation does and does not prove, which is exactly what's expected of a first project in this field.
+Being transparent about these limitations is intentional because it shows a clear understanding of what the simulation does and does not prove, which is exactly what's expected of a first project in this field.
 
 ---
-
 
 ## Future Work
 
 - Re-run the same experiments using a **circuit-level noise model** instead of a phenomenological one, to see how much the threshold shifts.
 - Extend the project to the **surface code**, which protects against both bit-flip and phase-flip errors simultaneously and is the leading candidate for real fault-tolerant quantum computers.
-- Compare PyMatching's MWPM decoder against other open-source decoders to see how decoder choice affects the logical error rate.
-- Fix a random seed and log exact result values for full reproducibility.
-- Try Stim's `SI1000` or other more realistic pre-built noise models used in recent Google Quantum AI hardware papers.
 
 ---
-
 
 ## Project Structure
 
