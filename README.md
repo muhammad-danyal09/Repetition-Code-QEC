@@ -149,9 +149,10 @@ The full threshold plot, generated using Sinter, comparing code distances 3, 5, 
 ### Key Observations
 
 - **Low-noise regime (4% depolarization):** At distance 9, running 100,000 shots produced only a small number of logical errors, confirming the code protects the logical qubit well when physical noise is low.
- "There were `X` wrong predictions out of 100,000 shots"
+ "There were 32 wrong predictions(logical errors) out of 100000 shots in my project."
 - **High-noise regime (13% depolarization):** The same distance-9 code, tested under the same conditions, showed a clear increase in logical errors. This confirms the expected relationship: **more physical noise → more logical errors.**
-  *(Fill in your exact printed count and computed logical error rate here.)*
+  "There were 3354 wrong predictions(logical errors) out of 100000 shots in my project."
+  logical error rate = number of logical errors/number of shots = 0.03354
 - **Distance sweep (d = 3, 5, 7):** At low physical error rates, larger code distances gave a lower logical error rate. At high physical error rates, this advantage shrank or disappeared.
 - **Sinter threshold plot (d = 3, 5, 7, 9):** The curves for different distances cross close together around a specific physical error rate. Below that point, increasing the distance helps. Above it, increasing the distance stops helping (and can even hurt). Report the approximate crossing point you observed once you have run the notebook and can read it off the plot.
 
